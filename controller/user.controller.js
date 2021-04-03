@@ -80,3 +80,18 @@ module.exports.deleteUser = async (req, res, next) => {
     next(err);
   }
 };
+
+module.exports.getOneUser = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(id, {
+      attributes: {
+        exclude: ['password'],
+      },
+    });
+    res.status(200).send({
+      data: user,
+    });
+  } catch (err) {
+    next(err);
+  }
+};

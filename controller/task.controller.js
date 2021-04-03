@@ -24,3 +24,48 @@ module.exports.getUserTasks = async (req, res, next) => {
     next(err);
   }
 };
+
+module.exports.getAllTasks = async (req, res, next) => {
+  try {
+    const tasks = await Task.findAll();
+    res.status(200).send({
+      data: tasks,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.updateTask = async (req, res, next) => {
+  try {
+    const {
+      params: { id },
+      body,
+    } = req;
+
+    const [rowsCount, [updatedTask]] = await Task.update(body, {
+      where: { id },
+      returning: true,
+    });
+
+    res.send({ data: updatedTask });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.deleteTask = async (req, res, next) => {
+  try {
+    const {
+      params: { id },
+    } = req;
+
+    const task = await Task.findByPk(id);
+
+    const result = await task.destroy();
+
+    res.send({ data: task });
+  } catch (err) {
+    next(err);
+  }
+};
